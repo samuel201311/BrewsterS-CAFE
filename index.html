@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrewsterS CAFE | Olongapo City's Finest Artisan Coffee</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1B4332;      /* Deep Forest Green */
+            --secondary: #2D6A4F;    /* Mid-tone Green */
+            --accent: #D8F3DC;       /* Very Soft Mint/White-Green */
+            --bg-light: #FFFFFF;     /* Pure White */
+            --text-dark: #081C15;    /* Very Dark Green */
+            --white: #FFFFFF;
+            --transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Lato', sans-serif; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        ul { list-style: none; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- NAVIGATION: DYNAMIC HEADER CHANGE --- */
+        header { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+            /* 1. START SMALL AND TRANSPARENT */
+            padding: 10px 0; 
+            transition: var(--transition);
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(4px);
+        }
+
+        /* 2. TRANSITION TO NORMAL SIZE ON SCROLL */
+        header.scrolled { 
+            padding: 22px 0; 
+            background-color: var(--white);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #f0f0f0;
+            backdrop-filter: none;
+        }
+
+        nav { display: flex; justify-content: space-between; align-items: center; }
+
+        /* Initial Logo: Small & White */
+        .logo { 
+            font-size: 1.3rem; 
+            font-weight: 900; 
+            color: var(--white); 
+            transition: var(--transition); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        /* Scrolled Logo: Normal & Green */
+        header.scrolled .logo { 
+            font-size: 1.8rem; 
+            color: var(--primary); 
+            text-shadow: none;
+        }
+
+        .nav-links { display: flex; gap: 30px; }
+        
+        /* Initial Links: Small & White */
+        .nav-links a { 
+            color: var(--white); 
+            font-weight: 700; 
+            font-size: 0.7rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            transition: var(--transition); 
+        }
+
+        /* Scrolled Links: Normal & Green */
+        header.scrolled .nav-links a { 
+            color: var(--primary); 
+            font-size: 0.85rem; 
+        }
+
+        .nav-links a:hover { color: var(--accent) !important; }
+        header.scrolled .nav-links a:hover { color: var(--secondary) !important; }
+
+        .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 6px; }
+        .hamburger span { width: 28px; height: 2px; background-color: var(--white); transition: var(--transition); }
+        header.scrolled .hamburger span { background-color: var(--primary); }
+
+        /* --- HERO SECTION --- */
+        .hero { 
+            height: 100vh; 
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            color: var(--white); 
+        }
+        .hero-content h1 { font-size: clamp(2.8rem, 8vw, 5.5rem); margin-bottom: 20px; line-height: 1.1; }
+        .hero-content p { font-size: 1.25rem; margin-bottom: 40px; max-width: 650px; margin-inline: auto; font-weight: 300; }
+
+        /* --- BUTTONS --- */
+        .btn { display: inline-block; padding: 16px 32px; border-radius: 4px; font-weight: 700; cursor: pointer; transition: var(--transition); text-align: center; border: 2px solid transparent; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; }
+        .btn-primary { background-color: var(--secondary); color: var(--white); }
+        .btn-primary:hover { background-color: var(--primary); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-outline { background-color: transparent; border-color: var(--white); color: var(--white); }
+        .btn-outline:hover { background-color: var(--white); color: var(--primary); }
+
+        /* --- MENU SECTION --- */
+        .section-padding { padding: 120px 0; }
+        .section-title { text-align: center; font-size: 3rem; margin-bottom: 60px; color: var(--primary); position: relative; }
+        .section-title::after { content: ''; display: block; width: 60px; height: 3px; background: var(--secondary); margin: 20px auto 0; }
+        
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-bottom: 60px; }
+        .menu-card { background: var(--white); border-radius: 0; transition: var(--transition); overflow: hidden; border: 1px solid #f0f0f0; }
+        .menu-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        .menu-img { height: 220px; width: 100%; object-fit: cover; }
+        .menu-info { padding: 25px; text-align: center; }
+        .menu-card h3 { margin-bottom: 10px; color: var(--primary); font-size: 1.4rem; }
+        .menu-card p { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
+        .menu-price { font-weight: 700; color: var(--secondary); font-size: 1.3rem; display: block; }
+
+        /* --- ABOUT SECTION --- */
+        .about { background-color: var(--accent); display: flex; align-items: stretch; padding: 0; overflow: hidden; }
+        .about-text { flex: 1; padding: 100px 80px; }
+        .about-img { flex: 1; background: url('https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat; min-height: 500px; }
+        .feature-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-weight: 700; color: var(--primary); }
+
+        /* --- FULL GALLERY SECTION --- */
+        .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 300px; gap: 15px; }
+        .gallery-item { position: relative; overflow: hidden; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+        .gallery-item:hover img { transform: scale(1.1); }
+        .gallery-item::before { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent, rgba(27,67,50,0.7)); opacity: 0; transition: var(--transition); z-index: 1; }
+        .gallery-item:hover::before { opacity: 1; }
+        .g-tall { grid-row: span 2; }
+        .g-wide { grid-column: span 2; }
+
+        /* --- TESTIMONIALS SECTION --- */
+        .testimonials { background: #f7fcf9; }
+        .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .testimonial-card { background: var(--white); padding: 50px 40px; border-top: 5px solid var(--secondary); box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .reviewer-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; }
+
+        /* --- CONTACT & MAP SECTION --- */
+        .contact-flex { display: flex; gap: 80px; align-items: flex-start; }
+        .contact-info { flex: 1; }
+        .contact-map { flex: 1.2; width: 100%; height: 500px; border: 10px solid var(--accent); border-radius: 4px; overflow: hidden; }
+        .contact-map iframe { width: 100%; height: 100%; border: none; }
+        .hours-table { width: 100%; margin-top: 40px; border-collapse: collapse; }
+        .hours-table td { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+
+        /* --- SOCIAL PROOF BAR --- */
+        .social-proof { background-color: var(--primary); color: var(--accent); padding: 50px 0; border-top: 4px solid var(--secondary); }
+        .proof-grid { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; }
+        .proof-item { font-weight: 700; font-size: 1rem; letter-spacing: 1px; }
+
+        /* --- FOOTER SECTION --- */
+        footer { background-color: #081C15; color: var(--white); padding: 100px 0 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
+
+        /* --- ANIMATIONS --- */
+        .fade-in { opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
+        .fade-in.appear { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 992px) {
+            .menu-grid, .testimonial-grid { grid-template-columns: repeat(2, 1fr); }
+            .about { flex-direction: column; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .proof-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { position: fixed; top: 0; right: -100%; height: 100vh; width: 80%; background: var(--primary); flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; z-index: 1001; }
+            .nav-links.active { right: 0; }
+            .hamburger { display: flex; z-index: 1002; }
+            .menu-grid, .testimonial-grid, .gallery-grid, .contact-flex { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header">
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">BrewsterS.</a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#menu">Menu</a></li>
+                    <li><a href="#about">Our Story</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#contact">Location</a></li>
+                </ul>
+                <div class="hamburger" id="hamburger">
+                    <span></span><span></span><span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <h1 class="fade-in">Where Every Cup <br>Tells a Story</h1>
+                <p class="fade-in">Experience handcrafted artisan coffee and the best community vibes in Olongapo City.</p>
+                <div class="hero-btns fade-in">
+                    <a href="#menu" class="btn btn-primary">Discover Menu</a>
+                    <a href="#contact" class="btn btn-outline">Find Us</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="menu" class="section-padding">
+            <div class="container">
+                <h2 class="section-title fade-in">Fan Favourites</h2>
+                <div class="menu-grid">
+                    <div class="menu-card fade-in">
+                        <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=600" class="menu-img">
+                        <div class="menu-info">
+                            <h3>Signature Brew</h3>
+                            <p>Premium dark roast with bold chocolate undertones.</p>
+                            <span class="menu-price">₱180</span>
+                        </div>
+                    </div>
+                    <div class="menu-card fade-in">
+                        <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?q=80&w=600" class="menu-img">
+                        <div class="menu-info">
+                            <h3>Iced Caramel Latte</h3>
+                            <p>Double espresso chilled with artisanal caramel drizzle.</p>
+                            <span class="menu-price">₱210</span>
+                        </div>
+                    </div>
+                    <div class="menu-card fade-in">
+                        <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=600" class="menu-img">
+                        <div class="menu-info">
+                            <h3>Avocado Toast</h3>
+                            <p>Smashed local avocados, feta, and chili on sourdough.</p>
+                            <span class="menu-price">₱320</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="about-text fade-in">
+                <h2 class="section-title" style="text-align: left; margin-bottom: 30px;">Heart of Gapo</h2>
+                <p>Located on Magsaysay Drive, BrewsterS CAFE is where craftsmanship meets community. Our journey began with a simple mission: to serve the best cup of coffee in Zambales.</p>
+                <div style="margin: 30px 0;">
+                    <div class="feature-item"><span>✓</span> Locally Roasted Single Origin Beans</div>
+                    <div class="feature-item"><span>✓</span> Artisan Pastries Baked Every Morning</div>
+                    <div class="feature-item"><span>✓</span> High-Speed WiFi for Digital Nomads</div>
+                </div>
+                <a href="#" class="btn btn-primary">Our Full Story</a>
+            </div>
+            <div class="about-img"></div>
+        </section>
+
+        <section id="gallery" class="section-padding">
+            <div class="container">
+                <h2 class="section-title fade-in">Life at BrewsterS</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item g-wide fade-in">
+                        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=800">
+                    </div>
+                    <div class="gallery-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=800">
+                    </div>
+                    <div class="gallery-item g-tall fade-in">
+                        <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=800">
+                    </div>
+                    <div class="gallery-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1497933322477-e76a3c527021?q=80&w=800">
+                    </div>
+                    <div class="gallery-item g-wide fade-in">
+                        <img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=800">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding testimonials">
+            <div class="container">
+                <h2 class="section-title fade-in">What Locals Say</h2>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card fade-in">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150" class="reviewer-img">
+                        <p><em>"The best spot on Magsaysay for a quiet morning coffee. Their Flat White is consistently perfect."</em></p>
+                        <h4 style="color: var(--primary); margin-top: 15px;">Maria Santos</h4>
+                    </div>
+                    <div class="testimonial-card fade-in">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150" class="reviewer-img">
+                        <p><em>"I love the vibe here. It's the perfect place to get some work done. The staff is welcoming."</em></p>
+                        <h4 style="color: var(--primary); margin-top: 15px;">Jun Reyes</h4>
+                    </div>
+                    <div class="testimonial-card fade-in">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150" class="reviewer-img">
+                        <p><em>"Incredible food! The Avocado Toast is a must-try. Definitely the best cafe in Zambales."</em></p>
+                        <h4 style="color: var(--primary); margin-top: 15px;">Elena Gomez</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section-padding">
+            <div class="container">
+                <div class="contact-flex">
+                    <div class="contact-info fade-in">
+                        <h2 class="section-title" style="text-align: left;">Find Us</h2>
+                        <p><strong>22 Magsaysay Drive, Olongapo City,<br>2200 Zambales, Philippines</strong></p>
+                        <table class="hours-table">
+                            <tr><td>Monday — Friday</td><td style="text-align: right;">7:00am — 10:00pm</td></tr>
+                            <tr><td>Saturday — Sunday</td><td style="text-align: right;">8:00am — 11:00pm</td></tr>
+                        </table>
+                    </div>
+                    <div class="contact-map fade-in">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3851.644141671234!2d120.2828!3d14.8282!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTTCsDQ5JzQxLjUiTiAxMjDCsDE2JzU4LjEiRQ!5e0!3m2!1sen!2sph!4v1620000000000!5m2!1sen!2sph" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="social-proof">
+            <div class="container">
+                <div class="proof-grid">
+                    <div class="proof-item">★ 4.9 ZAMBALES RATED</div>
+                    <div class="proof-item">ESTABLISHED 2015</div>
+                    <div class="proof-item">100% ARABICA BEANS</div>
+                    <div class="proof-item">OPEN 7 DAYS</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h2 class="logo" style="margin-bottom: 20px; color: white;">BrewsterS.</h2>
+                    <p style="opacity: 0.7;">Crafting moments of joy in Olongapo City since 2015.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--secondary); margin-bottom: 20px;">Explore</h4>
+                    <ul>
+                        <li><a href="#menu">Menu</a></li>
+                        <li><a href="#about">Our Story</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: var(--secondary); margin-bottom: 20px;">Social</h4>
+                    <p>Follow us for daily brews and updates.</p>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; opacity: 0.5;">
+                © 2026 BrewsterS CAFE Olongapo.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // HEADER SCROLL LOGIC
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // MOBILE MENU LOGIC
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // FADE IN ANIMATION LOGIC
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('appear');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+    </script>
+</body>
+</html>
